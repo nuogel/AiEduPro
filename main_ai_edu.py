@@ -49,4 +49,4 @@ class ClipSolver:
 if __name__ == '__main__':
     data_path = 'E:/LG/AI EDU/datasets/PrisonBreak'
     solver = ClipSolver()
-    solver.clip(data_path, clip_video=False)#
+    solver.clip(data_path, clip_video=False)#eee
