@@ -4,13 +4,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 from moviepy.video.io.bindings import mplfig_to_npimage
 
-path = 'E://LG\programs//NLP//AiEduPro//datasets//lstm_net.avi'
-path = 'E://LG//programs//QT//ENV_SYS//my_video//2.mp4'
-clip = VideoFileClip(path).subclip(10, 55)  # (10 second to 20second)
-# clip1 = clip.fx(vfx.mirror_x)
-# clip2 = clip.fx(vfx.mirror_y)
+path = 'E:/LG/GitHub/AiEduPro/datasets/friends.mp4'
+# path = 'videos/2.mp4'
+clip = VideoFileClip(path).subclip(0, 5)  # (10 second to 20second)
+clip1 = clip.fx(vfx.mirror_x)
+clip2 = clip.fx(vfx.mirror_y)
 clip3 = clip.resize((400, 300))
-clip3.write_videofile('E://LG//programs//QT//ENV_SYS//my_video//2_2.mp4')
+
+
+# clip3.write_videofile('E://LG//programs//QT//ENV_SYS//my_video//2_2.mp4')
 
 # font = TextClip.list('font') #查看字体
 # font = TextClip.list('font') #查看字体
@@ -57,12 +59,20 @@ clip3.write_videofile('E://LG//programs//QT//ENV_SYS//my_video//2_2.mp4')
 ######################################
 # def invert_green_blue(image):
 #     return image[:, :, [0, 2, 1]]
-#
+
+
 #
 # video = clip.fl_image(invert_green_blue)
 # video.write_videofile('new_movie9.mp4')
-# ##########################################
+# # ##########################################
+def clip_button_words(image):
+    shape = image.shape
+    return image[:shape[0] - 40, ...]
 
+video = clip.fl_image(clip_button_words)
+video.write_videofile('new_movie9.mp4')
+
+# ======================================
 # def scroll(get_frame, t):
 #     """
 #     This function returns a 'region' of the current frame.
@@ -116,4 +126,3 @@ clip3.write_videofile('E://LG//programs//QT//ENV_SYS//my_video//2_2.mp4')
 # maskclip = ImageClip("my_mask.jpeg", ismask=True)
 # maskclip = VideoFileClip(path, has_mask=True).subclip(10, 20)
 # maskclip.preview()
-

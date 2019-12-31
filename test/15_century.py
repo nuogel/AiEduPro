@@ -40,7 +40,7 @@ import os
 # LOAD, EDIT, ANALYZE THE AUDIO
 
 
-audio = (AudioFileClip("datasets/lstm_net.avi")
+audio = (AudioFileClip("../datasets/lstm_net.avi")
          .subclip((4,7), (4,18))
          .audio_fadein(1)
          .audio_fadeout(1))
@@ -52,7 +52,7 @@ print ('Analyzed the audio, found a period of %.02f seconds'%audio_period)
 # LOAD, EDIT, ANALYZE THE VIDEO
 
 
-clip = (VideoFileClip("datasets/lstm_net.avi", audio=False)
+clip = (VideoFileClip("../datasets/lstm_net.avi", audio=False)
         .subclip((1,24.15),(1,26))
         .crop(x1=332, x2=910, y2=686))
 
@@ -113,5 +113,5 @@ credits = (TextClip(txt_credits, color='white',
 
 final = concatenate_videoclips([title, dancing_knights, credits])
 # final.preview()
-final.write_videofile("datasets/dancing_knights.mp4", fps=clip.fps,
+final.write_videofile("../datasets/dancing_knights.mp4", fps=clip.fps,
                       audio_bitrate="1000k", bitrate="4000k")

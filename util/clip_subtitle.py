@@ -23,7 +23,7 @@ class ClipSubtitle:
         basename = os.path.basename(path).split('.')[-1]
         subtitles_clip = []
         if basename == 'ass':
-            f = open(path, 'r', encoding='utf-16') # utf-16 utf-8
+            f = open(path, 'r', encoding='utf-16')  # utf-16 utf-8
             lines = f.readlines()
             i = 0
             for line in lines:
@@ -78,10 +78,10 @@ class ClipSubtitle:
             # if i == 344:
             #     a=0
             if i < len(subtitles_clip):
-                print(i, len(subtitles_clip))
+                # print(i, len(subtitles_clip))
                 while subtitles_clip[i][4] == 'Continue':
-                    english_subtitle += subtitles_clip[i][2]
-                    chinese_subtitle += subtitles_clip[i][3]
+                    english_subtitle += ('\n' + subtitles_clip[i][2])
+                    chinese_subtitle += ('\n' + subtitles_clip[i][3])
                     end_time = subtitles_clip[i][1]
                     if i + 1 < len(subtitles_clip):
                         i += 1
@@ -109,7 +109,7 @@ class ClipSubtitle:
             result_subs = self.combine_subtitle(result_subs)
         basename = os.path.basename(title_path)
         tmp = basename.split('.')
-        basename = tmp[0] + tmp[1] + '_' + tmp[2]  # 依文件名字的情况修改。
+        basename = tmp[0] + '_' + tmp[1]  # + '_' + tmp[2]  # 依文件名字的情况修改。
         basename = basename.lower()
         if save_path:
             save_sub_path = os.path.join(save_path, basename + '.txt')

@@ -1,5 +1,5 @@
 import numpy as np
-from moviepy.editor import *
+from moviepy.editor import CompositeVideoClip, TextClip, concatenate_videoclips
 from moviepy.video.tools.segmenting import findObjects
 
 # WE CREATE THE TEXT THAT IS GOING TO MOVE, WE CENTER IT.
@@ -50,6 +50,8 @@ def vortexout(screenpos, i, nletters):
 
 letters = findObjects(cvc)  # a list of ImageClips
 l = len(letters)
+
+
 # WE ANIMATE THE LETTERS
 
 def moveLetters(letters, funcpos):
