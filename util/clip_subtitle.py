@@ -24,7 +24,12 @@ class ClipSubtitle:
         subtitles_clip = []
         if basename == 'ass':
             f = open(path, 'r', encoding='utf-16')  # utf-16 utf-8
-            lines = f.readlines()
+            try:
+                a = f.readlines()
+            except:
+                return None
+            else:
+                lines = a
             i = 0
             for line in lines:
                 if ("Dialogue" in line):
@@ -93,37 +98,28 @@ class ClipSubtitle:
         return subtitles_clip_list
 
     def _save_txt(self, subtitles_clip, save_path):
-        subtitles_txt = os.path.basename(save_path)
-        subname = subtitles_txt.split('.')[0]
         f = open(save_path, 'w', encoding='utf-8')
-
         for i, sub in enumerate(subtitles_clip):
-            txt = '{}_{};{};{};{};{}\n'.format(subname, i, sub[0], sub[1], sub[2], sub[3])
+            txt = '{};{};{};{};{}\n'.format(sub[0], sub[1], sub[2], sub[3], sub[4])
             f.write(txt)
-            print(i, ': ', sub)
         f.close()
 
     def clip(self, title_path, combine=True, save_path=None):
         result_subs = self._read_subtitles(title_path)
+        if result_subs is None:return None
         if combine:
             result_subs = self.combine_subtitle(result_subs)
         basename = os.path.basename(title_path)
         tmp = basename.split('.')
         basename = tmp[0] + '_' + tmp[1]  # + '_' + tmp[2]  # 依文件名字的情况修改。
         basename = basename.lower()
-        if save_path:
-            save_sub_path = os.path.join(save_path, basename + '.txt')
-            self._save_txt(result_subs, save_sub_path)
+
         for i, r_sub in enumerate(result_subs):
             id = basename + '_' + str(i)
             r_sub.insert(0, id)
-
+            print(i, ': ', result_subs[i])
+        if save_path:
+            save_sub_path = os.path.join(save_path, basename + '.txt')
+            self._save_txt(result_subs, save_sub_path)
         return result_subs
 
-
-if __name__ == '__main__':
-    path = "datasets/videos/Zootopia/Zootopia.2016.1080p.BluRay.x264-SPARKS/Zootopia.2016.1080p.BluRay.x264-SPARKS.简体&英文.ass"
-    save_path = 'datasets/videos/Zootopia/Zootopia.txt'
-    combine = True
-    cliper = ClipSubtitle()
-    subtitles_clip = cliper.clip(path, combine, save_path)

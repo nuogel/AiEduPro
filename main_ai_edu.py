@@ -11,26 +11,31 @@ class ClipSolver:
 
     def _prepare(self, data_path, clip_video, key_word):
         # Prepare Path
-        save_sub_dir = data_path + '/clip_subtitle/'
+
+        sub_path = data_path[0]
+        vid_path = data_path[1]
+        out_path = data_path[-1]
+
+        save_sub_dir = out_path + '/clip_subtitle/'
 
         if key_word:
-            save_vid_dir = data_path + '/KeyWords/'
+            save_vid_dir = out_path + '/KeyWords/'
         else:
-            save_vid_dir = data_path + '/clip_video/'
+            save_vid_dir = out_path + '/clip_video/'
         os.makedirs(save_sub_dir, exist_ok=True)
         os.makedirs(save_vid_dir, exist_ok=True)
 
         # Prepare data
-        sub_path_list = glob.glob(data_path + '/raw_subtitle/*.ass')
+        sub_path_list = glob.glob(sub_path) # [-6:]
         # vid_path_list = glob.glob(data_path + '/raw_video/*.mp4')
-        vid_path_list = glob.glob('D:/UserData/Downloads/' + '老友记第1季/*.mp4')[:5]
+        vid_path_list = glob.glob(vid_path)
         if clip_video:
             out_list = []
             # TODO:判断名字是否一样。
             for vid_path in vid_path_list:
                 vid_basename = os.path.basename(vid_path)
                 vid_tmp = vid_basename.split('.')
-                vid_name = vid_tmp[1] + '.' + vid_tmp[2]
+                vid_name = vid_tmp[0] + '.' + vid_tmp[1]
                 for sub_path in sub_path_list:
                     sub_basename = os.path.basename(sub_path)
                     if vid_name.lower() in sub_basename.lower():
@@ -50,14 +55,21 @@ class ClipSolver:
             else:
                 sub_path, vid_path = raw_path.split(';;')
                 result_subs = self.sub_cliper.clip(sub_path, combine=combine_lines, save_path=save_sub_dir)
+                if result_subs is None: continue
                 self.vid_cliper.clip_video(vid_path, result_subs, save_dir=save_vid_dir, just_show_video=just_show_video, key_word=key_words, combine_videos=combine_videos)
         self.vid_cliper._combine_all_video(save_vid_dir)
 
 
 if __name__ == '__main__':
-    data_path = 'E:/LG/AI EDU/datasets/friends'
-    key_words = ["stupid", "I love you", "How could you", "What's going on", 'awkward', 'horrible']
+    out_path = 'E:/LG/AI EDU/datasets/OUTPUT/'
+    sub_path = 'E:/LG/AI EDU/datasets/raw_subtitle/prisonbreak/*.ass'
+    vid_path = 'F:/YYData/Downloads/*/*.mkv'
 
+    key_words = ["stupid", "I love you", "How could you", "What's going on", 'awkward', 'horrible']
+    data_path = [sub_path, vid_path, out_path]
     solver = ClipSolver()
-    combine_videos = True
-    solver.clip(data_path, combine_lines=False, clip_video=True, just_show_video=False, key_words=key_words, combine_videos=combine_videos)  # ee
+    clip_video = False
+    combine_videos = True  # combine the same word video to one.
+    combine_lines = True
+    just_show_video = False
+    solver.clip(data_path, combine_lines=combine_lines, clip_video=clip_video, just_show_video=just_show_video, key_words=key_words, combine_videos=combine_videos)  # ee
