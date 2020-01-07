@@ -1,12 +1,15 @@
 from moviepy.editor import *
 from util.clip_subtitle import ClipSubtitle
 import cv2
+import random
 
 
 class ClipVideo:
     def __init__(self):
         self.cliper_subtitle = ClipSubtitle()
         self.combine_dict = {}
+        self.out_size = (1080, 512)
+        self.max_length = 100
 
     def init_clip(self, key_words):
         key_words_out = []
@@ -15,7 +18,7 @@ class ClipVideo:
             self.combine_dict[key_word] = []
         return key_words_out
 
-    def clip_video(self, vid_path, clip_subs, save_dir, just_show_video, key_word=None, combine_videos=True):
+    def clip_video(self, vid_path, clip_subs, just_show_video, key_word=None, ):
         '''
 
         :param video_path:  the raw video path
@@ -23,7 +26,14 @@ class ClipVideo:
         :param save_dir:  path to save clipped video.
         :return:
         '''
-        video = VideoFileClip(vid_path)
+
+        self.just_show_video = just_show_video
+        try:
+            _video = VideoFileClip(vid_path)
+        except:
+            return 0
+        else:
+            video = _video
 
         for sub in clip_subs:
             # len_clips = 1000
@@ -42,18 +52,10 @@ class ClipVideo:
             for k, v in found_keyword_dict.items():
                 if v == True or v == []: continue
                 _clip = self._clip_raw_words(se_clip)
+                _clip = _clip.resize(self.out_size)
                 _clip = self._add_new_words(_clip, text=v)  # ,[]   + '\n'
                 self.combine_dict[k].append(_clip)
 
-            if just_show_video and not combine_videos:
-                se_clip.preview()
-            elif not combine_videos:
-                save_path = os.path.join(save_dir, sub[0] + '.mp4')
-
-                if os.path.isfile(save_path):
-                    os.remove(save_path)
-                se_clip.write_videofile(save_path)
-            print(sub)
         video.reader.close()
         video.audio.reader.close_proc()
 
@@ -70,8 +72,8 @@ class ClipVideo:
         return video
 
     def _add_new_words(self, clip, text):
-        text_size = (1280, 200)
-        fontsize = 40
+        text_size = (self.out_size[0], 200)
+        fontsize = self.out_size[0] // 27
         if isinstance(text, list):
             head_word = text[1]
             l0 = len(text[0])  # before KEYWORD
@@ -137,5 +139,9 @@ class ClipVideo:
             print('------->>>>Found :"', k, '": ', len(v))
             if v == []: continue
             save_path = os.path.join(save_dir, k + '.mp4')
-            video_combine = concatenate_videoclips(v)
-            video_combine.write_videofile(save_path)
+            random.shuffle(v)
+            video_combine = concatenate_videoclips(v, method='compose')
+            if self.just_show_video:
+                video_combine.preview()
+            else:
+                video_combine.write_videofile(save_path, fps=10)
